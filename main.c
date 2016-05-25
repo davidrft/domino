@@ -33,15 +33,15 @@ int menu() {
 Lista* gerarpecas() {
     int i, j, k=0;
     Lista* v;
-    peca pedra;
+    peca p;
     for (i=0; i <= 6; i++) {
         for (j = 0; j <= i; j++) {
             pedra.a = i;
             pedra.b = j;
             if (i=0 && j=0) {
-                v = lst_criar(pedra);
+                v = lst_criar(p);
             } else {
-                lst_adicionar(pedra, v);
+                lst_adicionar(p, v);
             }
         }
     }
@@ -79,13 +79,7 @@ void printl (Lista* l) {
 
 
 int main() {
-    inicializar();
-    peca pecasAll[28];
-
-    gerarpecas(pecasAll);
-
+    SetConsoleTitle("Projeto Métodos Computacionais - Domino Lista");
     menu();
-    //printl(mesa);
-    printf("\n");
     return 0;
 }
