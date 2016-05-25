@@ -12,21 +12,21 @@ typedef struct {
     int b;
 }peca;
 
-int random(int n) {
+int random(int n) {  //Gera um numero de 0 a n inclusivamente
     int f = (double)rand() / RAND_MAX * (n+1);
     return f;
 }
 
-int escolha(int n, int m) {
+int escolha(int m) { //Pega do usuário um numero de 1 a m (inclusivamente) através do getch
     int c;
     do {
         c = getch();
         c = (int)(c - '0');
-    } while (c<n || c>m);
+    } while (c<1 || c>m);
     return c;
 }
 
-int menu() {
+int menu() { //Menu inicial
     int c;
     printf("\t______                _             \n");
     printf("\t|  _  \\              (_)            \n");
@@ -44,7 +44,7 @@ int menu() {
     }
 }
 
-Lista* gerarpecas() {
+Lista* gerarpecas() { //Gera todas as peças do domino
     int i, j, k=0;
     Lista* v;
     peca p;
@@ -61,11 +61,11 @@ Lista* gerarpecas() {
     }
 }
 
-void printp(peca p) {
+void printp(peca p) { //Imprime uma peça do domino
     printf("(%d, %d)", p.a, p.b);
 }
 
-void printl(Lista* l) {
+void printl(Lista* l) { //Imprime a lista de peças que estão na mesa com a formatação certa
     Lista* p = l->proximo;
     printf("   ");
     while (1) {
@@ -91,7 +91,7 @@ void printl(Lista* l) {
 
 }
 
-void atribuirpecas(lista* p, lista *v, int n) {
+void atribuirpecas(lista* p, lista *v, int n) { //Atribui n peças aleatórias da lista v para a lista p
     int i, aleat, tam;
     tam = lst_tam(v);
     for (i=0; i<n; i++) {
