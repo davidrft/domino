@@ -4,13 +4,12 @@
 #include <windows.h>
 #include <math.h>
 #include <time.h>
-
-srand(time(NULL)*getpid());
+#include "lista.h"
 
 typedef struct {
     int a;
     int b;
-}peca;
+} peca;
 
 int random(int n) {  //Gera um numero de 0 a n inclusivamente
     int f = (double)rand() / RAND_MAX * (n+1);
@@ -38,42 +37,39 @@ int menu() { //Menu inicial
     printf("\t\t1. Novo Jogo");
     printf("\n\t\t2. Continue Jogo");
     printf("\n\t\t3. Sair");
-    c = escolha(1, 3);
+    c = escolha(3);
     if (c == 3) {
         exit(3);
     }
 }
 
 Lista* gerarpecas() { //Gera todas as peças do domino
-    int i, j, k=0;
+    int i, j;
     Lista* v;
     peca p;
     for (i=0; i <= 6; i++) {
         for (j = 0; j <= i; j++) {
-            pedra.a = i;
-            pedra.b = j;
-            if (i=0 && j=0) {
-                v = lst_criar(p);
-            } else {
-                lst_add_fim(p, v);
-            }
+            p.a = i;
+            p.b = j;
+            lst_add_fim(&p, v);
         }
     }
 }
 
-void printp(peca p) { //Imprime uma peça do domino
-    printf("(%d, %d)", p.a, p.b);
+void printp(Dados d) { //Imprime uma peça do domino
+    peca *p = (peca*) d;
+    printf("(%d, %d)", p->a, p->b);
 }
 
 void printl(Lista* l) { //Imprime a lista de peças que estão na mesa com a formatação certa
-    Lista* p = l->proximo;
+    Lista* p = l->prox;
     printf("   ");
     while (1) {
         printp(p->dados);
-        p = p->proximo;
+        p = p->prox;
         if (p == NULL)
             break;
-        p = p->proximo;
+        p = p->prox;
         if (p == NULL)
             break;
     }
@@ -81,36 +77,33 @@ void printl(Lista* l) { //Imprime a lista de peças que estão na mesa com a forma
     printf("\n");
     while (1) {
         printp(p->dados);
-        p = p->proximo;
+        p = p->prox;
         if (p == NULL)
             break;
-        p = p->proximo;
+        p = p->prox;
         if (p == NULL)
             break;
     }
 
 }
 
-void atribuirpecas(lista* p, lista *v, int n) { //Atribui n peças aleatórias da lista v para a lista p
+void atribuirpecas(Lista* l, Lista *v, int n) { //Atribui n peças aleatórias da lista v para a lista p
     int i, aleat, tam;
+    peca* p;
     tam = lst_tam(v);
     for (i=0; i<n; i++) {
-        aleat = random(tam)
-        if (p==NULL) {
-            lst_criar(lst_get(v, aleat));
-            lst_del(v, aleat);
-            tam--;
-        }
-        else {
-            lst_add_end(lst_get(v, aleat));
-            lst_del(v, aleat);
-            tam--;
-        }
+        aleat = random(tam);
+        p = (peca*) lst_get(v, aleat);
+        lst_add_fim(p, l);
+        tam--;
     }
 }
 
 int main() {
+    srand(time(NULL)*getpid());
     SetConsoleTitle("Projeto Métodos Computacionais - Domino Lista");
-    menu();
+    //menu();
+    Lista* mesa = gerarpecas();
+    printl(mesa);
     return 0;
 }

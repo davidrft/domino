@@ -52,7 +52,7 @@ Lista* lst_add_fim(Dados d, Lista* l) {
     else if (l->prox == NULL)
         l->prox = lst_criar(d);
     else
-        lst_adicionar(d, l->prox);
+        lst_add_fim(d, l->prox);
     return l;
 }
 

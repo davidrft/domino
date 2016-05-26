@@ -15,4 +15,5 @@ int lst_tam(Lista *l);
 Lista* lst_add_inicio(Dados d, Lista* l);
 Lista* lst_add_fim(Dados d, Lista* l);
 Lista* lst_del(Lista* l, int pos);
-Lista* lst_buscar(Dados d,int(*igual)(Dados, Dados), Lista* l);
+Lista* lst_buscar(Dados d, int(*igual)(Dados, Dados), Lista* l);
+Dados lst_get(Lista* l, int pos);
