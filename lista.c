@@ -46,13 +46,11 @@ Lista* lst_add_inicio(Dados d, Lista* l) {
 }
 
 Lista* lst_add_fim(Dados d, Lista* l) {
-    if (l == NULL) {
-        return lst_criar(d);
+    Lista* p = l;
+    while (p->prox != NULL) {
+        p = p->prox;
     }
-    else if (l->prox == NULL)
-        l->prox = lst_criar(d);
-    else
-        lst_add_fim(d, l->prox);
+    p->prox = lst_criar(d);
     return l;
 }
 
