@@ -51,23 +51,20 @@ Lista* lst_add_fim(Dados d, Lista* l) {
 }
 
 Lista* lst_del(Lista* l, int pos) {
-    if (pos == 0){
+    if (pos == 0) {
         return l->prox;
+    } else {
+    int i;
+    Lista *p = l;
+    Lista *v = l->prox->prox;
+    for (i=1; i<pos; i++) {
+      p = p->prox;
+      v = v->prox;
     }
-	else if (pos+1 > lst_tam(l)) {
-		return l;
-	} else {
-		int i;
-		Lista *p = l;
-		Lista *v = l->prox->prox;
-		for (i=1; i<pos; i++) {
-			p = p->prox;
-			v = v->prox;
-		}
-		free(p->prox);
-		p->prox = v;
-		return l;
-	}
+    free(p->prox);
+    p->prox = v;
+    return l;
+  }
 }
 
 Dados lst_get(Lista* l, int pos) {

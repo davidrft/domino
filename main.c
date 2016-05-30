@@ -71,6 +71,7 @@ void printp(Dados d) { //Imprime uma peça do domino
 }
 
 void printmesa(Lista* l) { //Imprime a lista de peças que estão na mesa com a formatação certa
+    printf("\tMESA\n");
     Lista* p;
     if (l->prox != NULL) {
         p = l->prox;
@@ -100,63 +101,111 @@ void printmesa(Lista* l) { //Imprime a lista de peças que estão na mesa com a fo
         else
             break;
     }
-}
-
-Lista* atribuirpecas(Lista* l, Lista *v, int n) { //Atribui n peças aleatórias da lista v para a lista p
-    int i, aleat, tam;
-    peca* p;
-    tam = lst_tam(v) - 1;
-    Dados d;
-    for (i=0; i<n; i++) {
-        aleat = random(tam);
-        d = lst_get(v, aleat);
-        v = lst_del(v, aleat);
-        if (i==0)
-            l = lst_criar(d);
-        else
-            l = lst_add_fim(d, l);
-        tam--;
-    }
-    return l;
+    printf("\n\n");
 }
 
 void printmao(Lista* l) {
     Lista* p = l;
-
-    if(p != NULL) {
-        do {
-            printp(p->dados);
-            printf("\n");
-            p = p->prox;
-        } while(p->prox != NULL);
+    while (p != NULL) {
+        printp(p->dados);
+        printf("\n");
+        p = p->prox;
     }
+}
+
+int game() {
+    peca p[28];
+    Lista *pecasAll, *pc1, *pc2, *pc3, *player, *mesa;
+    pecasAll = gerarpecas(pecasAll, p);
+    system("cls");
+    int i, aleat, tam;
+
+    //Atribuindo pc1
+    tam = lst_tam(pecasAll) - 1;
+    Dados d;
+    for (i=0; i<6; i++) {
+        aleat = random(tam);
+        d = lst_get(pecasAll, aleat);
+        pecasAll = lst_del(pecasAll, aleat);
+        if (i==0) {
+            pc1 = lst_criar(d);
+        }
+        else {
+            pc1 = lst_add_fim(d, pc1);
+        }
+    tam--;
+    }
+
+    //Atribuindo pc2
+    tam = lst_tam(pecasAll) - 1;
+    for (i=0; i<6; i++) {
+        aleat = random(tam);
+        d = lst_get(pecasAll, aleat);
+        pecasAll = lst_del(pecasAll, aleat);
+        if (i==0) {
+            pc2 = lst_criar(d);
+        }
+        else {
+            pc2 = lst_add_fim(d, pc2);
+        }
+    tam--;
+    }
+
+    //Atribuindo pc3
+    tam = lst_tam(pecasAll) - 1;
+    for (i=0; i<6; i++) {
+        aleat = random(tam);
+        d = lst_get(pecasAll, aleat);
+        pecasAll = lst_del(pecasAll, aleat);
+        if (i==0) {
+            pc3 = lst_criar(d);
+        }
+        else {
+            pc3 = lst_add_fim(d, pc3);
+        }
+    tam--;
+    }
+
+    //Atribuindo player
+    tam = lst_tam(pecasAll) - 1;
+    for (i=0; i<6; i++) {
+        aleat = random(tam);
+        d = lst_get(pecasAll, aleat);
+        pecasAll = lst_del(pecasAll, aleat);
+        if (i==0) {
+            player = lst_criar(d);
+        }
+        else {
+            player = lst_add_fim(d, player);
+        }
+    tam--;
+    }
+
+    int comeca = random(4);
+
+    return 1;
 }
 
 int main() {
     srand(time(NULL)*getpid());
     SetConsoleTitle("Projeto Metodos Computacionais - Domino Lista");
 
-    peca p[28];
+   /* peca p[28];
     Lista *pecasAll, *pc1, *pc2, *pc3, *player, *mesa;
-    int i, j, k=0;
-    pecasAll = gerarpecas(pecasAll, p);
+    pecasAll = gerarpecas(pecasAll, p);*/
 
     int c = menu();
-    if (c == 1) {
-        system("cls");
-        pc1 = atribuirpecas(pc1, pecasAll, 6);
-        pc2 = atribuirpecas(pc2, pecasAll, 6);
-        pc3 = atribuirpecas(pc3, pecasAll, 6);
-        player = atribuirpecas(player, pecasAll, 6);
-        printmesa(pecasAll);
-        printf("\n");
-        printmesa(pc1);
-        printf("\n");
-        printmesa(pc2);
-        printf("\n");
-        printmesa(pc3);
-        printf("\n");
-        printmesa(player);
+    switch (c) {
+        case 1:
+            game();
+            break;
+        case 2:
+            break;
+        case 3:
+            return 1;
+            break;
+        default:
+            return 1;
     }
 
     return 0;
