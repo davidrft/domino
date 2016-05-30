@@ -5,17 +5,46 @@
 #include <math.h>
 #include <time.h>
 #include "lista.h"
+#include <string.h>
 
 typedef struct {
     int a;
     int b;
 } peca;
 
+typedef struct {
+    int pc;
+    char nome[20];
+    Lista *mao;
+} jogador;
+
 int igual(peca *p, peca *d) {
     if (p->a == d->a && p->b && d->b)
         return 1;
     else
         return 0;
+}
+
+int buscaPeca(Lista *l, peca *p) {
+    Lista *v = l;
+    while (v != NULL) {
+        if (igual((v->dados), p))
+            return 1;
+        v = v->prox;
+    }
+    return 0;
+}
+
+int buscaPos(Lista *l, peca *p) {
+    Lista *v = l;
+    int pos = 0;
+    while (v != NULL) {
+        if (igual((v->dados), p))
+            return pos;
+        v = v->prox;
+        pos++;
+    }
+    return pos;
 }
 
 int random(int n) {  //Gera um numero de 0 a n inclusivamente
@@ -70,6 +99,22 @@ void printp(Dados d) { //Imprime uma peça do domino
 	printf("(%d, %d)", p->a, p->b);
 }
 
+int carroca(jogador j, int i) {
+    peca *dozao = malloc(sizeof(peca));
+        dozao->a = i;
+        dozao->b = i;
+    int pos;
+    if (j.pc == 0) {
+        printf("O %s tem a carroca de %d!", j.nome, i);
+        pos = buscaPos(j.mao, dozao);
+        return pos;
+    }
+    else {
+        printf("Voce tem a carroca de %d! Jogue-a.", i);
+        return 7;
+    }
+}
+
 void printmesa(Lista* l) { //Imprime a lista de peças que estão na mesa com a formatação certa
     printf("\tMESA\n");
     Lista* p;
@@ -113,9 +158,20 @@ void printmao(Lista* l) {
     }
 }
 
-int game() {
+int gameEasy() {
     peca p[28];
-    Lista *pecasAll, *pc1, *pc2, *pc3, *player, *mesa;
+
+    jogador player, pc1, pc2, pc3;
+    strcpy(player.nome, "Jogador");
+    player.pc = 0;
+    strcpy(pc1.nome, "Computador 1");
+    pc1.pc = 1;
+    strcpy(pc2.nome, "Computador 2");;
+    pc2.pc = 1;
+    strcpy(pc3.nome, "Computador 3");;
+    pc3.pc = 1;
+
+    Lista *pecasAll, *mesa;
     pecasAll = gerarpecas(pecasAll, p);
     system("cls");
     int i, aleat, tam;
@@ -128,10 +184,10 @@ int game() {
         d = lst_get(pecasAll, aleat);
         pecasAll = lst_del(pecasAll, aleat);
         if (i==0) {
-            pc1 = lst_criar(d);
+            pc1.mao = lst_criar(d);
         }
         else {
-            pc1 = lst_add_fim(d, pc1);
+            pc1.mao = lst_add_fim(d, pc1.mao);
         }
     tam--;
     }
@@ -143,10 +199,10 @@ int game() {
         d = lst_get(pecasAll, aleat);
         pecasAll = lst_del(pecasAll, aleat);
         if (i==0) {
-            pc2 = lst_criar(d);
+            pc2.mao = lst_criar(d);
         }
         else {
-            pc2 = lst_add_fim(d, pc2);
+            pc2.mao = lst_add_fim(d, pc2.mao);
         }
     tam--;
     }
@@ -158,10 +214,10 @@ int game() {
         d = lst_get(pecasAll, aleat);
         pecasAll = lst_del(pecasAll, aleat);
         if (i==0) {
-            pc3 = lst_criar(d);
+            pc3.mao = lst_criar(d);
         }
         else {
-            pc3 = lst_add_fim(d, pc3);
+            pc3.mao = lst_add_fim(d, pc3.mao);
         }
     tam--;
     }
@@ -173,15 +229,37 @@ int game() {
         d = lst_get(pecasAll, aleat);
         pecasAll = lst_del(pecasAll, aleat);
         if (i==0) {
-            player = lst_criar(d);
+            player.mao = lst_criar(d);
         }
         else {
-            player = lst_add_fim(d, player);
+            player.mao = lst_add_fim(d, player.mao);
         }
     tam--;
     }
 
-    int comeca = random(4);
+    int pos; //Verificando quem tem a maior carroca e joga primeiro.
+    for (i = 6; i>=0; i--) {
+        printf("Quem tiver (%d, %d) comeca!", i, i);
+        peca *c = malloc(sizeof(peca));
+            c->a = i;
+            c->b = i;
+        if (buscaPeca(pc1.mao, c)) {
+            carroca(pc1, i);
+            break;
+        }
+        else if (buscaPeca(pc2.mao, c)) {
+            carroca(pc2, i);
+            break;
+        }
+        else if (buscaPeca(pc3.mao, c)) {
+            carroca(pc3, i);
+            break;
+        }
+        else if (buscaPeca(pc2.mao, c)) {
+            carroca(pc2, i);
+            break;
+        }
+    }
 
     return 1;
 }
@@ -190,14 +268,10 @@ int main() {
     srand(time(NULL)*getpid());
     SetConsoleTitle("Projeto Metodos Computacionais - Domino Lista");
 
-   /* peca p[28];
-    Lista *pecasAll, *pc1, *pc2, *pc3, *player, *mesa;
-    pecasAll = gerarpecas(pecasAll, p);*/
-
     int c = menu();
     switch (c) {
         case 1:
-            game();
+            gameEasy();
             break;
         case 2:
             break;
