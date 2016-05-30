@@ -51,7 +51,10 @@ Lista* lst_add_fim(Dados d, Lista* l) {
 }
 
 Lista* lst_del(Lista* l, int pos) {
-	if (pos+1 > lst_tam(l)) {
+    if (pos == 0){
+        return l->prox;
+    }
+	else if (pos+1 > lst_tam(l)) {
 		return l;
 	} else {
 		int i;
@@ -70,14 +73,17 @@ Lista* lst_del(Lista* l, int pos) {
 Dados lst_get(Lista* l, int pos) {
     Lista *p = l;
     Dados d;
-    int i;
+    int i=0;
+
+    if (i==0) {
+        d = p->dados;
+    }
 
     while(p->prox!=NULL && i<pos) {
         p = p->prox;
         i++;
     }
     d = p->dados;
-    l = lst_del(l, pos);
 
     return d;
 }

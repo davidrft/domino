@@ -102,18 +102,22 @@ void printmesa(Lista* l) { //Imprime a lista de peças que estão na mesa com a fo
     }
 }
 
-void atribuirpecas(Lista* l, Lista *v, int n) { //Atribui n peças aleatórias da lista v para a lista p
+Lista* atribuirpecas(Lista* l, Lista *v, int n) { //Atribui n peças aleatórias da lista v para a lista p
     int i, aleat, tam;
     peca* p;
-    tam = lst_tam(v);
+    tam = lst_tam(v) - 1;
+    Dados d;
     for (i=0; i<n; i++) {
         aleat = random(tam);
+        d = lst_get(v, aleat);
+        v = lst_del(v, aleat);
         if (i==0)
-            l = lst_criar(lst_get(v, aleat));
+            l = lst_criar(d);
         else
-            l = lst_add_fim(lst_get(v, aleat), l);
+            l = lst_add_fim(d, l);
         tam--;
     }
+    return l;
 }
 
 void printmao(Lista* l) {
@@ -140,11 +144,19 @@ int main() {
     int c = menu();
     if (c == 1) {
         system("cls");
-        atribuirpecas(pc1, pecasAll, 6);
-        atribuirpecas(pc2, pecasAll, 6);
-        atribuirpecas(pc3, pecasAll, 6);
-        atribuirpecas(player, pecasAll, 6);
+        pc1 = atribuirpecas(pc1, pecasAll, 6);
+        pc2 = atribuirpecas(pc2, pecasAll, 6);
+        pc3 = atribuirpecas(pc3, pecasAll, 6);
+        player = atribuirpecas(player, pecasAll, 6);
         printmesa(pecasAll);
+        printf("\n");
+        printmesa(pc1);
+        printf("\n");
+        printmesa(pc2);
+        printf("\n");
+        printmesa(pc3);
+        printf("\n");
+        printmesa(player);
     }
 
     return 0;
