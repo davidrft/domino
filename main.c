@@ -48,6 +48,7 @@ int buscaPos(Lista *l, peca *p) {
 }
 
 int random(int n) {  //Gera um numero de 0 a n inclusivamente
+    srand(time(NULL)*getpid());
     int f = (double)rand() / RAND_MAX * (n+1);
     return f;
 }
@@ -104,7 +105,7 @@ int carroca(jogador j, int i) {
         dozao->a = i;
         dozao->b = i;
     int pos;
-    if (j.pc == 0) {
+    if (j.pc == 1) {
         printf("O %s tem a carroca de %d!", j.nome, i);
         pos = buscaPos(j.mao, dozao);
         return pos;
@@ -151,10 +152,13 @@ void printmesa(Lista* l) { //Imprime a lista de peças que estão na mesa com a fo
 
 void printmao(Lista* l) {
     Lista* p = l;
+    int i = 1;
     while (p != NULL) {
+        printf("%d\t-\t", i);
         printp(p->dados);
         printf("\n");
         p = p->prox;
+        i++;
     }
 }
 
@@ -239,33 +243,39 @@ int gameEasy() {
 
     int pos; //Verificando quem tem a maior carroca e joga primeiro.
     for (i = 6; i>=0; i--) {
-        printf("Quem tiver (%d, %d) comeca!", i, i);
+        printf("Quem tiver (%d, %d) comeca!\n", i, i);
         peca *c = malloc(sizeof(peca));
             c->a = i;
             c->b = i;
         if (buscaPeca(pc1.mao, c)) {
-            carroca(pc1, i);
+            pos = carroca(pc1, i);
+            pc1.mao = lst_del(pc1.mao, pos);
+            mesa = lst_criar(c);
             break;
         }
         else if (buscaPeca(pc2.mao, c)) {
-            carroca(pc2, i);
+            pos = carroca(pc2, i);
+            pc2.mao = lst_del(pc2.mao, pos);
+            mesa = lst_criar(c);
             break;
         }
         else if (buscaPeca(pc3.mao, c)) {
-            carroca(pc3, i);
-            break;
+            pos = carroca(pc3, i);
+            pc3.mao = lst_del(pc3.mao, pos);
+            mesa = lst_criar(c);
         }
-        else if (buscaPeca(pc2.mao, c)) {
-            carroca(pc2, i);
+        else if (buscaPeca(player.mao, c)) {
+            pos = carroca(player, i);
             break;
         }
     }
+
+
 
     return 1;
 }
 
 int main() {
-    srand(time(NULL)*getpid());
     SetConsoleTitle("Projeto Metodos Computacionais - Domino Lista");
 
     int c = menu();
