@@ -11,6 +11,12 @@ typedef struct {
     int b;
 } peca;
 
+int igual(peca *p, peca *d) {
+    if (p->a == d->a && p->b && d->b)
+        return 1;
+    else
+        return 0;
+}
 
 int random(int n) {  //Gera um numero de 0 a n inclusivamente
     int f = (double)rand() / RAND_MAX * (n+1);
@@ -101,25 +107,23 @@ void atribuirpecas(Lista* l, Lista *v, int n) { //Atribui n peças aleatórias da 
     tam = lst_tam(v);
     for (i=0; i<n; i++) {
         aleat = random(tam);
-        p = (peca*) lst_get(v, aleat);
-        l = lst_add_fim(p, l);
+        if (i==0)
+            l = lst_criar(lst_get(v, aleat));
+        else
+            l = lst_add_fim(lst_get(v, aleat), l);
         tam--;
     }
 }
 
 void printmao(Lista* l) {
-    Lista* p;
-    if (l->prox != NULL) {
-        p = l;
-        while (1) {
+    Lista* p = l;
+
+    if(p != NULL) {
+        do {
             printp(p->dados);
-            if (p->prox != NULL) {
-                p = p->prox;
-                printf("\n");
-            } else {
-                break;
-            }
-        }
+            printf("\d");
+            p = p->prox;
+        } while(p->prox != NULL);
     }
 }
 

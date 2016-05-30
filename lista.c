@@ -20,11 +20,10 @@ void lst_liberar(Lista* l) {
 }
 
 int lst_tam(Lista *l) {
-    int tam = 0;
-    Lista* p;
+    int tam = 1;
+    Lista* p = l;
 
-    p = l;
-    while(p != NULL) {
+    while(p->prox != NULL) {
         tam++;
         p = p->prox;
     }
@@ -32,22 +31,19 @@ int lst_tam(Lista *l) {
     return tam;
 }
 
-Lista* lst_add_inicio(Dados d, Lista* l) {
-    if (l == NULL)
-        return lst_criar(d);
-    else {
-        Lista *l_aux;
+Lista* lst_add_inicio(Dados d, Lista *l) {
+    Lista *p;
 
-        l_aux = lst_criar(d);
-        l_aux->prox = l;
+    p = lst_criar(d);
+    p->prox = l;
 
-        return l_aux;
-    }
+    return p;
 }
 
 Lista* lst_add_fim(Dados d, Lista* l) {
     Lista* p = l;
-    while (p->prox != NULL) {
+
+    while(p->prox != NULL) {
         p = p->prox;
     }
     p->prox = lst_criar(d);
@@ -55,38 +51,35 @@ Lista* lst_add_fim(Dados d, Lista* l) {
 }
 
 Lista* lst_del(Lista* l, int pos) {
-    if (l == NULL)
-        return l;
-    else {
-        int i;
-        Lista* p, *a;
-
-        p = l->prox;
-        a = l;
-        for(i=0; i<pos; ++i) {
-            a = p;
-            p = p->prox;
-        }
-        a->prox = p->prox;
-    	free(p);
-
-        return l;
-    }
+	if (pos+1 > lst_tam(l)) {
+		return l;
+	} else {
+		int i;
+		Lista *p = l;
+		Lista *v = l->prox->prox;
+		for (i=1; i<pos; i++) {
+			p = p->prox;
+			v = v->prox;
+		}
+		free(p->prox);
+		p->prox = v;
+		return l;
+	}
 }
 
 Dados lst_get(Lista* l, int pos) {
-    if (l == NULL)
-	return l;
-    else {
-    	int i;
-    	Lista* p;
+    Lista *p = l;
+    Dados d;
+    int i;
 
-    	for(i=0; i<pos; i++)
-    	    p = p->prox;
-    	lst_del(l, pos);
-
-    	return p->dados;
+    while(p->prox!=NULL && i<pos) {
+        p = p->prox;
+        i++;
     }
+    d = p->dados;
+    l = lst_del(l, pos);
+
+    return d;
 }
 
 Lista* lst_buscar(Dados d,int(*igual)(Dados, Dados), Lista* l) {
