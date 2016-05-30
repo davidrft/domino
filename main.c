@@ -62,6 +62,7 @@ Lista* gerarpecas(Lista* v, peca *p) { //Gera todas as peças do domino
             k++;
         }
     }
+    return v;
 }
 
 void printp(Dados d) { //Imprime uma peça do domino
@@ -121,7 +122,7 @@ void printmao(Lista* l) {
     if(p != NULL) {
         do {
             printp(p->dados);
-            printf("\d");
+            printf("\n");
             p = p->prox;
         } while(p->prox != NULL);
     }
@@ -134,26 +135,16 @@ int main() {
     peca p[28];
     Lista *pecasAll, *pc1, *pc2, *pc3, *player, *mesa;
     int i, j, k=0;
-    for (i=0; i <= 6; i++) {
-        for (j = 0; j <= i; j++) {
-            p[k].a = i;
-            p[k].b = j;
-            if (i==0 && j==0) {
-                pecasAll = lst_criar((Dados)(&p[k]));
-            } else {
-                pecasAll = lst_add_fim((Dados)(&p[k]), pecasAll);
-            }
-            k++;
-        }
-    }
+    pecasAll = gerarpecas(pecasAll, p);
 
     int c = menu();
     if (c == 1) {
+        system("cls");
         atribuirpecas(pc1, pecasAll, 6);
         atribuirpecas(pc2, pecasAll, 6);
         atribuirpecas(pc3, pecasAll, 6);
         atribuirpecas(player, pecasAll, 6);
-        printmao(pc1);
+        printmesa(pecasAll);
     }
 
     return 0;
