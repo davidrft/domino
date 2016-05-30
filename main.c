@@ -19,7 +19,7 @@ typedef struct {
 } jogador;
 
 int igual(peca *p, peca *d) {
-    if (p->a == d->a && p->b && d->b)
+    if (p->a == d->a && p->b == d->b)
         return 1;
     else
         return 0;
@@ -28,8 +28,9 @@ int igual(peca *p, peca *d) {
 int buscaPeca(Lista *l, peca *p) {
     Lista *v = l;
     while (v != NULL) {
-        if (igual((v->dados), p))
+        if (igual((peca*)(v->dados), p)) {
             return 1;
+        }
         v = v->prox;
     }
     return 0;
@@ -101,27 +102,46 @@ void printp(Dados d) { //Imprime uma peça do domino
 }
 
 int carroca(jogador j, int i) {
-    peca *dozao = malloc(sizeof(peca));
-        dozao->a = i;
-        dozao->b = i;
+    printf("Quem tiver (%d, %d) comeca!\n", i, i);
+    peca *c = malloc(sizeof(peca));
+        c->a = i;
+        c->b = i;
     int pos;
     if (j.pc == 1) {
-        printf("O %s tem a carroca de %d!", j.nome, i);
-        pos = buscaPos(j.mao, dozao);
+        printf("O %s tem a carroca de %d!\n\n", j.nome, i);
+        pos = buscaPos(j.mao, c);
         return pos;
     }
     else {
-        printf("Voce tem a carroca de %d! Jogue-a.", i);
-        return 7;
+        pos = buscaPos(j.mao, c);
+        printf("Voce tem a carroca de %d! Pressione %d para joga-la!\n\n", i, pos+1);
+        return pos;
     }
 }
 
 void printmesa(Lista* l) { //Imprime a lista de peças que estão na mesa com a formatação certa
-    printf("\tMESA\n");
+    printf("\tMESA");
     Lista* p;
-    if (l->prox != NULL) {
-        p = l->prox;
-        printf("   ");
+    if (l == NULL) {
+        printf("\n");
+    }else {
+        if (l->prox != NULL) {
+            p = l->prox;
+            printf("   ");
+            while (1) {
+                printp(p->dados);
+                if (p->prox != NULL)
+                    p = p->prox;
+                else
+                    break;
+                if (p->prox != NULL)
+                    p = p->prox;
+                else
+                    break;
+            }
+        }
+        p = l;
+        printf("\n");
         while (1) {
             printp(p->dados);
             if (p->prox != NULL)
@@ -129,37 +149,24 @@ void printmesa(Lista* l) { //Imprime a lista de peças que estão na mesa com a fo
             else
                 break;
             if (p->prox != NULL)
-                p = p->prox;
+                    p = p->prox;
             else
                 break;
         }
+        printf("\n\n");
     }
-    p = l;
-    printf("\n");
-    while (1) {
-        printp(p->dados);
-        if (p->prox != NULL)
-            p = p->prox;
-        else
-            break;
-        if (p->prox != NULL)
-                p = p->prox;
-        else
-            break;
-    }
-    printf("\n\n");
 }
-
 void printmao(Lista* l) {
     Lista* p = l;
     int i = 1;
     while (p != NULL) {
-        printf("%d\t-\t", i);
+        printf("%d - ", i);
         printp(p->dados);
         printf("\n");
         p = p->prox;
         i++;
     }
+    printf("\n");
 }
 
 int gameEasy() {
@@ -175,9 +182,8 @@ int gameEasy() {
     strcpy(pc3.nome, "Computador 3");;
     pc3.pc = 1;
 
-    Lista *pecasAll, *mesa;
+    Lista *pecasAll, *mesa = NULL;
     pecasAll = gerarpecas(pecasAll, p);
-    system("cls");
     int i, aleat, tam;
 
     //Atribuindo pc1
@@ -241,34 +247,78 @@ int gameEasy() {
     tam--;
     }
 
-    int pos; //Verificando quem tem a maior carroca e joga primeiro.
-    for (i = 6; i>=0; i--) {
-        printf("Quem tiver (%d, %d) comeca!\n", i, i);
-        peca *c = malloc(sizeof(peca));
-            c->a = i;
-            c->b = i;
-        if (buscaPeca(pc1.mao, c)) {
-            pos = carroca(pc1, i);
-            pc1.mao = lst_del(pc1.mao, pos);
-            mesa = lst_criar(c);
-            break;
+    int tampc1 = lst_tam(pc1.mao);
+    int tampc2 = lst_tam(pc2.mao);
+    int tampc3 = lst_tam(pc3.mao);
+    int tamplayer = lst_tam(player.mao);
+    int rodada = 0;
+    while (tampc1 != 0 || tampc2 != 0 || tampc3 != 0 || tamplayer != 0) {
+        system("cls");
+
+        printf("%s (%d)", player.nome, tamplayer);
+        printf("\n");
+        printmao(player.mao);
+        printf("%s (%d)", pc1.nome, tampc1);
+        printf("\n");
+        printmao(pc1.mao);
+        printf("%s (%d)", pc2.nome, tampc2);
+        printf("\n");
+        printmao(pc2.mao);
+        printf("%s (%d)", pc3.nome, tampc3);
+        printf("\n");
+        printmao(pc3.mao);
+        printf("Dorme (4)");
+        printf("\n");
+        printmao(pecasAll);
+
+        printmesa(mesa);
+        if (rodada == 0) { //Verificando quem tem a maior carroca e joga primeiro.
+            int pos;
+            char opcao=7;
+            for (i = 6; i>=0; i--) {
+                peca *c = malloc(sizeof(peca));
+                    c->a = i;
+                    c->b = i;
+                if (buscaPeca(pc1.mao, c) == 1) {
+                    pos = carroca(pc1, i);
+                    pc1.mao = lst_del(pc1.mao, pos);
+                    mesa = lst_criar(c);
+                    tampc1--;
+                    break;
+                }
+                else if (buscaPeca(pc2.mao, c) == 1) {
+                    pos = carroca(pc2, i);
+                    pc2.mao = lst_del(pc2.mao, pos);
+                    mesa = lst_criar(c);
+                    tampc2--;
+                    break;
+                }
+                else if (buscaPeca(pc3.mao, c) == 1) {
+                    pos = carroca(pc3, i);
+                    pc3.mao = lst_del(pc3.mao, pos);
+                    mesa = lst_criar(c);
+                    tampc3--;
+                    break;
+                }
+                else if (buscaPeca(player.mao, c) == 1) {
+                    pos = carroca(player, i);
+                    do {
+                        fflush(stdin);
+                        opcao = escolha(6);
+                    } while (opcao != pos+1);
+                    player.mao = lst_del(player.mao, opcao);
+                    mesa = lst_criar(c);
+                    break;
+                }
+                else {
+                    printf("Ninguem tem (%d, %d), proxima carroca...\n", i, i);
+                }
+            }
         }
-        else if (buscaPeca(pc2.mao, c)) {
-            pos = carroca(pc2, i);
-            pc2.mao = lst_del(pc2.mao, pos);
-            mesa = lst_criar(c);
-            break;
-        }
-        else if (buscaPeca(pc3.mao, c)) {
-            pos = carroca(pc3, i);
-            pc3.mao = lst_del(pc3.mao, pos);
-            mesa = lst_criar(c);
-        }
-        else if (buscaPeca(player.mao, c)) {
-            pos = carroca(player, i);
-            break;
-        }
+
+        break;
     }
+
 
 
 
