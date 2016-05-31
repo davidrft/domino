@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 //#include <conio.h>
-#include <windows.h>
+//#include <windows.h>
 #include <math.h>
 #include <time.h>
 #include "lista.h"
@@ -49,7 +49,7 @@ int buscaPos(Lista *l, peca *p) {
 }
 
 int random(int n) {  //Gera um numero de 0 a n inclusivamente
-    srand(time(NULL)*getpid());
+    srand(time(NULL));
     int f = (double)rand() / RAND_MAX * (n+1);
     return f;
 }
