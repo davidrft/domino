@@ -48,7 +48,7 @@ int buscaPos(Lista *l, peca *p) {
     return pos;
 }
 
-int random(int n) {  //Gera um numero de 0 a n inclusivamente
+int aleatorio(int n) {  //Gera um numero de 0 a n inclusivamente
     srand(time(NULL));
     int f = (double)rand() / RAND_MAX * (n+1);
     return f;
@@ -57,8 +57,7 @@ int random(int n) {  //Gera um numero de 0 a n inclusivamente
 int escolha(int m) { //Pega do usuário um numero de 1 a m (inclusivamente) através do getch
     int c;
     do {
-        c = getch();
-        c = (int)(c - '0');
+        scanf("%d", &c);
     } while (c<1 || c>m);
     return c;
 }
@@ -190,7 +189,7 @@ int gameEasy() {
     tam = lst_tam(pecasAll) - 1;
     Dados d;
     for (i=0; i<6; i++) {
-        aleat = random(tam);
+        aleat = aleatorio(tam);
         d = lst_get(pecasAll, aleat);
         pecasAll = lst_del(pecasAll, aleat);
         if (i==0) {
@@ -205,7 +204,7 @@ int gameEasy() {
     //Atribuindo pc2
     tam = lst_tam(pecasAll) - 1;
     for (i=0; i<6; i++) {
-        aleat = random(tam);
+        aleat = aleatorio(tam);
         d = lst_get(pecasAll, aleat);
         pecasAll = lst_del(pecasAll, aleat);
         if (i==0) {
@@ -220,7 +219,7 @@ int gameEasy() {
     //Atribuindo pc3
     tam = lst_tam(pecasAll) - 1;
     for (i=0; i<6; i++) {
-        aleat = random(tam);
+        aleat = aleatorio(tam);
         d = lst_get(pecasAll, aleat);
         pecasAll = lst_del(pecasAll, aleat);
         if (i==0) {
@@ -235,7 +234,7 @@ int gameEasy() {
     //Atribuindo player
     tam = lst_tam(pecasAll) - 1;
     for (i=0; i<6; i++) {
-        aleat = random(tam);
+        aleat = aleatorio(tam);
         d = lst_get(pecasAll, aleat);
         pecasAll = lst_del(pecasAll, aleat);
         if (i==0) {
