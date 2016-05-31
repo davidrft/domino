@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <conio.h>
+//#include <conio.h>
 #include <windows.h>
 #include <math.h>
 #include <time.h>
@@ -253,7 +253,7 @@ int gameEasy() {
     int tamplayer = lst_tam(player.mao);
     int rodada = 0;
     while (tampc1 != 0 || tampc2 != 0 || tampc3 != 0 || tamplayer != 0) {
-        system("cls");
+        //system("cls");
 
         printf("%s (%d)", player.nome, tamplayer);
         printf("\n");
@@ -272,6 +272,7 @@ int gameEasy() {
         printmao(pecasAll);
 
         printmesa(mesa);
+        //system("PAUSE");
         if (rodada == 0) { //Verificando quem tem a maior carroca e joga primeiro.
             int pos;
             char opcao=7;
@@ -306,7 +307,7 @@ int gameEasy() {
                         fflush(stdin);
                         opcao = escolha(6);
                     } while (opcao != pos+1);
-                    player.mao = lst_del(player.mao, opcao);
+                    player.mao = lst_del(player.mao, opcao-1);
                     mesa = lst_criar(c);
                     break;
                 }
@@ -315,7 +316,8 @@ int gameEasy() {
                 }
             }
         }
-
+        rodada++;
+        //system("PAUSE");
         break;
     }
 
@@ -326,12 +328,14 @@ int gameEasy() {
 }
 
 int main() {
-    SetConsoleTitle("Projeto Metodos Computacionais - Domino Lista");
+    //SetConsoleTitle("Projeto Metodos Computacionais - Domino Lista");
 
     int c = menu();
+    printf("\n\n");
     switch (c) {
         case 1:
             gameEasy();
+            scanf("%d", &c);
             break;
         case 2:
             break;
