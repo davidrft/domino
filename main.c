@@ -162,6 +162,7 @@ void printmesa(Lista* l) { //Imprime a lista de peças que estão na mesa com a 
         printf("\n\n");
     }
 }
+
 void printmao(Lista* l) {
     Lista* p = l;
     int i = 1;
@@ -226,7 +227,18 @@ int game(jogador pc[], Lista* mesa, Lista* pecasAll) {
     Lista *l = mesa;
     peca *table;
 
+    printmao(pc[0].mao);
+
     while (1) {
+        if(rodada != 0) { //atualiza mesa para avaliar se todos passam a vez
+            l = mesa;
+            table = (peca *)l->dados;
+            v[0] = table->a; //numero livre para jogadas no começo da mesa
+            while(l->prox != NULL)
+                l = l->prox;
+            table = (peca *)l->dados;
+            v[1] = table->b; //numero livre para jogadas no fim da mesa
+        }
         if(todos_passam(pc, v, tampc)) {
             jogador vencedor;
 
@@ -498,7 +510,7 @@ int game(jogador pc[], Lista* mesa, Lista* pecasAll) {
 }
 
 int main() {
-    srand(time(NULL)*getpid());
+    srand(time(NULL));
 
     peca p[28];
     jogador pc[4];
