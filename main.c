@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <windows.h>
 #include <math.h>
 #include <time.h>
 #include "lista.h"
@@ -74,7 +73,7 @@ int menu() { //Menu inicial
     printf("\t| | | |___  _ __ ___  _ _ __   ___  \n");
     printf("\t| | | / _ \\| '_ ` _ \\| | '_ \\ / _ \\ \n");
     printf("\t| |/ / (_) | | | | | | | | | | (_) |\n");
-    printf("\t|___/ \\___/|_| |_| |_|_|_| |_|\\___/ \n");
+    printf("\t|___/ \\___/|_|_| |_|_|_| |_|\\___/ \n");
     printf("\n");
     printf("\t\t1. Novo Jogo");
     printf("\n\t\t2. Continue Jogo");
@@ -228,7 +227,6 @@ int game(jogador pc[], Lista* mesa, Lista* pecasAll) {
     peca *table;
 
     while (1) {
-        //system("cls");
         if(todos_passam(pc, v, tampc)) {
             jogador vencedor;
 
@@ -492,7 +490,6 @@ int game(jogador pc[], Lista* mesa, Lista* pecasAll) {
                 }
             }
             rodada++;
-            //system("PAUSE");
         }
 
     }
@@ -501,7 +498,6 @@ int game(jogador pc[], Lista* mesa, Lista* pecasAll) {
 }
 
 int main() {
-    //SetConsoleTitle("Projeto Metodos Computacionais - Domino Lista");
     srand(time(NULL)*getpid());
 
     peca p[28];
