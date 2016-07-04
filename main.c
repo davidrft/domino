@@ -321,9 +321,6 @@ int game(jogador pc[], Lista* mesa, Lista* pecasAll, int rodada, int ordem) {
                             printf("Computador %d passou a jogada\n", ordem%4);
                         }
                         else {
-                            printf("\n%s\n", pc[ordem%4].nome);
-                            printmao(pc[ordem%4].mao);
-
                             while(l!= NULL) {
                                 table = (peca *)l->dados;
 
@@ -363,9 +360,6 @@ int game(jogador pc[], Lista* mesa, Lista* pecasAll, int rodada, int ordem) {
                                 i++;
                             }
                             printf("Computador %d jogou a peca (%d, %d)\n\n", ordem%4, table->a, table->b);
-                            printf("\n%s\n", pc[ordem%4].nome);
-                            printmao(pc[ordem%4].mao);
-
                             printmesa(mesa);
                         }
                         if(tampc[ordem%4] == 0) {
