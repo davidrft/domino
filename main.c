@@ -118,6 +118,7 @@ int carroca(jogador j, int i, int f) {
         return pos;
     }
     else {
+        printmao(j.mao);
         pos = buscaPos(j.mao, c);
         printf("Voce tem a carroca de %d! Pressione %d para joga-la! ", i, pos+1);
         return pos;
@@ -218,16 +219,14 @@ int somapecas(Lista* mao){
     return soma;
 }
 
-int game(jogador pc[], Lista* mesa, Lista* pecasAll) {
-    int i, v[2] = {0}, aux, j, tampc[4];
+int game(jogador pc[], Lista* mesa, Lista* pecasAll, int rodada, int ordem) {
+    int i, v[2] = {0}, aux, j, tampc[5];
     for(i=0; i<4; ++i) {
         tampc[i] = lst_tam(pc[i].mao);
     }
-    int rodada = 0, ordem, e = 0;
+    int e = 0;
     Lista *l = mesa;
     peca *table;
-
-    printmao(pc[0].mao);
 
     while (1) {
         if(rodada != 0) { //atualiza mesa para avaliar se todos passam a vez
@@ -254,6 +253,13 @@ int game(jogador pc[], Lista* mesa, Lista* pecasAll) {
             }
 
             printf("O(s) vencedor(es) foi(ram) %s com %d pontos", vencedor.nome, vencedor.pc);
+            printf("\nRelatorio final: \n");
+            printf("Dorme: \n");
+            printmao(pecasAll);
+            for(i=0; i<4; i++){
+                printf("%s:\n", pc[i].nome);
+                printmao(pc[i].mao);
+            }
             break;
         }
         else {
@@ -315,6 +321,9 @@ int game(jogador pc[], Lista* mesa, Lista* pecasAll) {
                             printf("Computador %d passou a jogada\n", ordem%4);
                         }
                         else {
+                            printf("\n%s\n", pc[ordem%4].nome);
+                            printmao(pc[ordem%4].mao);
+
                             while(l!= NULL) {
                                 table = (peca *)l->dados;
 
@@ -350,18 +359,28 @@ int game(jogador pc[], Lista* mesa, Lista* pecasAll) {
                                     tampc[ordem%4]--;
                                     break;
                                 }
-                                i++;
                                 l = l->prox;
+                                i++;
                             }
                             printf("Computador %d jogou a peca (%d, %d)\n\n", ordem%4, table->a, table->b);
+                            printf("\n%s\n", pc[ordem%4].nome);
+                            printmao(pc[ordem%4].mao);
+
                             printmesa(mesa);
+                        }
+                        if(tampc[ordem%4] == 0) {
+                            printf("\n\tComputador %d ganhou o jogo!\n", ordem%4);
+                            printf("\nRelatorio final: \n");
+                            printf("Dorme: \n");
+                            printmao(pecasAll);
+                            for(i=0; i<4; i++){
+                                printf("%s:\n", pc[i].nome);
+                                printmao(pc[i].mao);
+                            }
+                            exit(1);
                         }
                         wait();
 
-                        if(tampc[i] == 0) {
-                            printf("\n\tComputador %d ganhou o jogo!\n", ordem%4);
-                            exit(1);
-                        }
                         ordem++;
                     }
                     else {
@@ -404,7 +423,37 @@ int game(jogador pc[], Lista* mesa, Lista* pecasAll) {
                                 } while(valido != 1 && valido != 0);
 
                                 if(valido == 1) {
-                                    //salvar o jogo
+                                    FILE * fp;
+                                    fp = fopen("domino.bin", "wb");
+
+                                    fwrite(&rodada, sizeof(int), 1, fp);
+                                    fwrite(&ordem, sizeof(int), 1, fp);
+
+                                    tampc[4] = lst_tam(mesa);
+                                    fwrite(&tampc[4], sizeof(int), 1, fp);
+                                    for(i=0; i<tampc[4]; ++i){
+                                        table = mesa->dados;
+                                        fwrite(table,sizeof(peca),1,fp);
+                                        mesa = mesa->prox;
+                                    }
+
+                                    tampc[4] = lst_tam(pecasAll);
+                                    fwrite(&tampc[4], sizeof(int), 1, fp);
+                                    for(i=0; i<tampc[4]; ++i){
+                                        table = pecasAll->dados;
+                                        fwrite(table,sizeof(peca),1,fp);
+                                        pecasAll = pecasAll->prox;
+                                    }
+
+                                    for (i = 0; i<4; i++){
+                                        fwrite(&tampc[i],sizeof(int),1,fp);
+                                        for(j=0; j<tampc[i]; ++j){
+                                            table = pc[i].mao->dados;
+                                            fwrite(table,sizeof(peca),1,fp);
+                                            pc[i].mao = pc[i].mao->prox;
+                                        }
+                                    }
+                                    fclose(fp);
                                     exit(1);
                                 }
                                 else {
@@ -489,14 +538,21 @@ int game(jogador pc[], Lista* mesa, Lista* pecasAll) {
                             if (valido == 1) {
                                 printf("\nVoce jogou a peca (%d, %d)\n\n", table->a,table->b);
                                 printmesa(mesa);
+                                wait();
                             }
                         }while (valido == 0);
 
                         if(tampc[ordem%4] == 0) {
                             printf("\n\tParabens, voce ganhou o jogo!\n");
+                            printf("\nRelatorio final: \n");
+                            printf("Dorme: \n");
+                            printmao(pecasAll);
+                            for(i=0; i<4; i++){
+                                printf("%s:\n", pc[i].nome);
+                                printmao(pc[i].mao);
+                            }
                             exit(1);
                         }
-                        i++;
                         ordem++;
                     }
                 }
@@ -512,6 +568,7 @@ int game(jogador pc[], Lista* mesa, Lista* pecasAll) {
 int main() {
     srand(time(NULL));
 
+
     peca p[28];
     jogador pc[4];
     strcpy(pc[0].nome, "Jogador");
@@ -519,8 +576,9 @@ int main() {
     strcpy(pc[2].nome, "Computador 2");
     strcpy(pc[3].nome, "Computador 3");
     Lista* mesa = NULL;
-    Lista* pecasAll;
-    int i, j, tam, aleat;
+    Lista* pecasAll = NULL;
+    int i, j, aux=0, tam, aleat, rodada, ordem;
+    FILE* fp;
 
     int c = menu();
     printf("\n\n");
@@ -543,10 +601,44 @@ int main() {
                 tam--;
                 }
             }
-            game(pc, mesa, pecasAll);
+            game(pc, mesa, pecasAll, 0, 0);
             scanf("%d", &c);
             break;
         case 2:
+            fp = fopen ("domino.bin", "rb");
+
+            fread(&rodada, sizeof(int), 1, fp);
+            fread(&ordem, sizeof(int), 1, fp);
+            fread(&tam, sizeof(int), 1, fp);
+            fread(&p[aux], sizeof(peca), 1, fp);
+            mesa = lst_criar(&p[0]);
+            for(i=1; i<tam; i++) {
+                fread(&p[i], sizeof(peca), 1, fp);
+                lst_add_fim(&p[i], mesa);
+            }
+            aux = i;
+
+            fread(&tam, sizeof(int), 1, fp);
+            fread(&p[aux], sizeof(peca), 1, fp);
+            pecasAll = lst_criar(&p[aux]);
+            for(i=1; i<tam; i++){
+                fread(&p[aux+i], sizeof(peca), 1, fp);
+                lst_add_fim(&p[aux+i], pecasAll);
+            }
+            aux += i;
+
+            for (j = 0; j<4; j++){
+                fread(&tam, sizeof(int), 1, fp);
+                fread(&p[aux], sizeof(peca), 1, fp);
+                pc[j].mao = lst_criar(&p[aux]);
+                for(i=1; i<tam; i++){
+                    fread(&p[aux+i], sizeof(peca), 1, fp);
+                    lst_add_fim(&p[aux+i], pc[j].mao);
+                }
+                aux +=i;
+            }
+            fclose(fp);
+            game(pc, mesa, pecasAll, rodada, ordem);
             break;
         case 3:
             return 1;
