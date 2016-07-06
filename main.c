@@ -73,7 +73,7 @@ int menu() { //Menu inicial
     printf("\t| | | |___  _ __ ___  _ _ __   ___  \n");
     printf("\t| | | / _ \\| '_ ` _ \\| | '_ \\ / _ \\ \n");
     printf("\t| |/ / (_) | | | | | | | | | | (_) |\n");
-    printf("\t|___/ \\___/|_|_| |_|_|_| |_|\\___/ \n");
+    printf("\t|___/ \\___/|_| |_| |_|_|_| |_|\\___/ \n");
     printf("\n");
     printf("\t\t1. Novo Jogo");
     printf("\n\t\t2. Continue Jogo");
@@ -606,6 +606,11 @@ int main() {
             break;
         case 2:
             fp = fopen ("domino.bin", "rb");
+
+            if(fp == NULL) {
+                printf("Nao existe partida salva, reinicie o jogo.\n");
+                return -1;
+            }
 
             fread(&rodada, sizeof(int), 1, fp);
             fread(&ordem, sizeof(int), 1, fp);
