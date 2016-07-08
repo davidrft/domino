@@ -544,7 +544,7 @@ int game(jogador pc[], Lista* mesa, Lista* pecasAll, int rodada, int ordem) {
                             printf("Dorme: \n");
                             printmao(pecasAll);
                             for(i=0; i<4; i++){
-								if (tamppc[ordem%4] != 0) {
+								if (tampc[ordem%4] != 0) {
 									printf("%s:\n", pc[i].nome);
 									printmao(pc[i].mao);
 								}
