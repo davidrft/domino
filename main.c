@@ -450,9 +450,19 @@ int game(jogador pc[], Lista* mesa, Lista* pecasAll, int rodada, int ordem) {
                                         }
                                     }
                                     fclose(fp);
+									lst_liberar(mesa);
+									lst_liberar(pecasAll);
+									for (i=0; i<4; i++) {
+										lst_liberar(pc[i].mao);
+									}
                                     exit(1);
                                 }
                                 else {
+									lst_liberar(mesa);
+									lst_liberar(pecasAll);
+									for (i=0; i<4; i++) {
+										lst_liberar(pc[i].mao);
+									}
                                     exit(1);
                                 }
 
